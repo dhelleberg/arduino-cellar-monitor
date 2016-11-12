@@ -7,9 +7,12 @@
 #define DHTTYPE DHT22 //DHT11, DHT21, DHT22
 
 byte mac[] {  0x09, 0x52, 0x2B, 0x38, 0xB7, 0xD1 };
-const IPAddress ip(192, 168, 178, 179);
-const IPAddress server(192, 168, 178, 35);
-
+const IPAddress ip(192, 168, 178, 205);
+const IPAddress subnet(255, 255, 255, 0);
+const IPAddress mqtt_server(192, 168, 178, 35);
+const IPAddress dns_server(192, 168, 178, 1);
+const IPAddress gate(192, 168, 178, 1);
+const int mqtt_port = 1883;
 
 EthernetClient ethClient;
 PubSubClient client(ethClient);
@@ -38,12 +41,12 @@ void setup()
 {
   Serial.begin(9600);
   dht.begin(); //init DHT sensor lib
-  client.setServer(server, 1883); //init MQTT lib
 
-  Ethernet.begin(mac, ip); //init ethernet
+
+  Ethernet.begin(mac, ip, dns_server, gate, subnet); //init ethernet
   // Allow the hardware to sort itself out
   delay(1500);
-
+  client.setServer(mqtt_server, mqtt_port); //init MQTT lib
   Serial.println("Setup -> done");
 }
 
